@@ -156,6 +156,16 @@ class ConfigMailingDeleteView(DeleteView):
     template_name = 'sender/delete_mailing.html'
     success_url = reverse_lazy('sender:profile')
 
+    class LetterMailingListView(ListView):
+        model = LetterMailing
+
+    lm_list = LetterMailingListView()
+    lm_list_query = lm_list.get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['letters'] = self.lm_list_query.filter(username=self.request.user, mailing=self.get_object().pk)
+        return context
 
 class ConfigMailingDetailView(DetailView):
     model = ConfigMailing
@@ -180,14 +190,10 @@ class ConfigMailingDetailView(DetailView):
     lm_list = LetterMailingListView()
     lm_list_query = lm_list.get_queryset()
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['trials'] = TryMailing.objects.all().filter(username=self.request.user)
-        context['letters'] = self.lm_list_query.filter(username=self.request.user)
+        context['letters'] = self.lm_list_query.filter(username=self.request.user, mailing=self.get_object().pk)
         context['form'] = self.lm_create_query
         context['user'] = self.request.user
         return context

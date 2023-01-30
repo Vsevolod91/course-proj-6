@@ -68,8 +68,11 @@
             <div class="card border-0">
                 <div class="card-header text-center">
                     <div class="row">
-                        <div class="col-lg-3 col-md-12 col-sm-12"></div>
-                        <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="col-lg-3 col-md-12 col-sm-12">  </div>
+                        {% if not letters %}
+                        <h4 class="text-center">У Вас пока нет писем в данной рассылке, создайте их, чтобы запустить рассылку</h4>
+                        {% else %}
+                        <div class="col-lg-6 col-md-12 col-sm-12 text-center">
                             <a class="p-1 btn btn-outline-success w-100" href="#create_letter_form">Создать новое письмо</a>
                         </div>
                     </div>
@@ -102,13 +105,17 @@
                 </table>
               </div>
             </div>
+        {% endif %}
         </div>
     </div>
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-lg-3 col-md-12 col-sm-12"></div>
-        <div class="col-lg-8 col-md-12 col-sm-12">
+        {% if not letters %}
+        {% else %}
+            <div class="col-lg-3 col-md-12 col-sm-12"></div>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+            {% endif %}
             <div class="card mb-4 box-shadow">
                 <div id='#create_letter_form' class="card-header text-center">
                     <h4 class="my-0 font-weight-normal">Создать новое письмо</h4>

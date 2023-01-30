@@ -70,6 +70,9 @@ class LetterMailing(models.Model):
     position = models.PositiveIntegerField(verbose_name='Очередь на отправку', **NULLABLE, validators=[MinValueValidator(10), MaxValueValidator(5000000)])
     status = models.CharField(verbose_name='Статус отправки', choices=STATUSES, default=STATUS_WAIT, max_length=20)
 
+    def __hash__(self):
+        return hash(self.pk)
+
     def __lt__(self, other):
         return self.position < other
 
