@@ -1,5 +1,4 @@
 {% load static %}
-{% load sender_filters %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,13 +24,13 @@
                             <div class="mb-3">
                                 <label class="form-label" for="id_username">{{ form.username.label }}</label>
                                 <input type="text" class="form-control form-control-sm" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
-                                <p><div class="form-error text-danger">{{  form.usename.errors | format_err }}</div></p>
+                                <p><div class="form-error text-danger">{{  form.usename.errors }}</div></p>
                             </div>
                             <p class="text-center">
                                 <div class="mb-3">
                                     <label class="form-label" for="id_password">Пароль: </label>
                                     <input type="password" class="form-control form-control-sm" name="password" autocomplete="current-password" required="" id="id_password">
-                                    <p><div class="form-error text-danger">{{  form.password.errors | format_err }}</div></p>
+                                    <p><div class="form-error text-danger">{{  form.password.errors }}</div></p>
                                 </div>
                                 <button class="btn btn-outline-primary text-center w-50" type="submit">Авторизация</button>
                             <div class="mb-3">  </div>

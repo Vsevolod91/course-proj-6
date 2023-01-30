@@ -237,5 +237,8 @@ class TryMailingListView(ListView):
     template_name = 'sender/try_list.html'
     success_url = reverse_lazy('sender:trials')
 
+    def get_queryset(self):
+       return super().get_queryset().filter(username=self.request.user)
+
 
 
