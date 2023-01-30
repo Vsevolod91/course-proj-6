@@ -1,0 +1,20 @@
+.hide {
+  display: none;
+}
+
+.wrapper {
+  width: 300px;
+  height: 300px;
+  border: 5px solid #515151;
+  align-items: center;
+}
+.exmpl {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.exmpl img {
+  height: 100%;
+  width: auto;
+}

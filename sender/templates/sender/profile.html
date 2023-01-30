@@ -1,0 +1,113 @@
+{% extends 'sender/base.html' %}
+
+{% block content %}
+    {% load static %}
+    {% load sender_filters %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h3 class="display-4">Мои рассылки</h3>
+    <p class="lead">Создавайте и изменяйте рассылки с различными темами и базами почтовых адресов</p>
+</div>
+<div class="container">
+    <div class="row text-center">
+    {% if not object_list %}
+        <h4 class="lead">Здравствуйте, {{ user }} у Вас пока нет рассылок. Вы можете создать рассылки с периодичностью отправки ежедневно,
+        раз в неделю, раз в месяц, добавлять к ним письма, и отслеживать, насколько успешно происходит рассылка </h4>
+        {% elif object_list %}
+        <div class="col-2"></div>
+        <div class="col-7">
+            <table class="table table-striped table-info">
+                <tbody>
+                <thead>
+                    <tr>
+                        <th class="col-2" scope="col">Название</th>
+                        <th class="col-1" scope="col">Периодичность</th>
+                        <th class="col-1" scope="col">Статус</th>
+                        <th class="col-2" scope="col">Готовность</th>
+                        <th class="col-1" scope="col"></th>
+                    </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr class="{% if object.periodicity == 'Раз в неделю' and not object.weekday %} table-danger
+                            {% elif object.periodicity == 'Раз в месяц' and not object.monthdate %} table-danger
+                            {% elif not object.mail_dump %} table-danger
+                        {% endif %}">
+                        <td><a href="{{ object.get_absolute_url }}">{{ object.title | slice:30 }}</a></td>
+                        <td>{{ object.periodicity }}</td>
+                        <td>{{ object.status }}</td>
+                        <td>{% if object.periodicity == 'Раз в неделю' and not object.weekday %} Добавьте день недели рассылки!
+                            {% elif object.periodicity == 'Раз в месяц' and not object.monthdate %} Добавьте дату месяца рассылки!
+                            {% elif not object.mail_dump %} Загрузите базу мейлов!
+                            {% else %} Рассылка готова к работе!
+                            {% endif %}</td>
+                        <td>
+                            <a class="img-fluid" href="{% url 'sender:update_mailing' object.pk %}"><img src="{% static "img/update.png" %}" title="Редактировать"></a>
+                            <a class="img-fluid" href="{% url 'sender:delete_mailing' object.pk %}"><img src="{% static "img/delete.png" %}" title="Удалить"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Создать новую рассылку</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="" class="form-floating" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden", id="id_username", name="username" value="{{ user.pk }}">
+                        <div class="mb-3">
+                            <label for="id_title">{{ form.title.label }}</label>
+                            <input type="text" class="form-control form-control-sm" name="title" maxlength="200" required="" id="id_title">
+                            <p><div class="form-error text-danger">{{  form.title.errors | format_err }}</div></p>
+                        </div>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="id_hour">{{ form.hour.label }}</label>
+                                    <select name="hour" class="form-control form-control-sm" id="id_hour">
+                                    <option value="12" selected="">12</option>
+                                    {% for hour in hours %}
+                                    <option value="{{ hour.id }}">{{ hour.num }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label for="id_minute">{{ form.minute.label }}</label>
+                                    <select name="minute" class="form-control form-control-sm" id="id_minute">
+                                        <option value="1">00</option>
+                                        {% for minute in minutes %}
+                                        <option value="{{ minute.id }}">{{ minute.num }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <p><div class="form-error text-danger">{{  form.hour.errors | format_err }}</div></p>
+                            <p><div class="form-error text-danger">{{  form.minute.errors | format_err }}</div></p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_periodicity">{{ form.periodicity.label }}</label>
+                                <select name="periodicity" class="form-control form-control-sm" id="id_periodicity">
+                                <option value="Ежедневно" selected="">Ежедневно</option>
+                                <option value="Раз в неделю">Раз в неделю</option>
+                                <option value="Раз в месяц">Раз в месяц</option>
+                            </select>
+                            <p><div class="form-error text-danger">{{  form.periodicity.errors | format_err }}</div></p>
+                        </div>
+                        <div class="mb-3">
+                             <label for="id_mail_dump">База рассылки в формате .txt:</label>
+                            <input type="file" class="form-control form-control-sm" name="mail_dump" id="id_mail_dump">
+                            <p><div class="form-error text-danger">{{  form.mail_dump.errors | format_err }}</div></p>
+                        </div>
+                        <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

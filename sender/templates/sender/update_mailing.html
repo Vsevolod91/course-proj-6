@@ -1,0 +1,93 @@
+{% extends 'sender/base.html' %}
+
+{% block content %}
+    {% load sender_filters %}
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Редактирование настроек рассылки</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="" class="form-floating" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {% if object.periodicity == 'Раз в неделю' %}
+                        <label for="id_weekday">{{ form.weekday.label }}</label>
+                        <select type="text" name="weekday" class="form-control form-control-sm" id="id_weekday">
+                            {% for day in days %}
+                                <option value="{{ day }}">{{ day.day }}</option>
+                            {% endfor %}
+                        </select>
+                            <p><div class="form-error text-danger">{{  form.weekday.errors | format_err }}</div></p>
+                        {% elif object.periodicity == 'Раз в месяц' %}
+                            <label for="id_monthdate">{{ form.monthdate.label }}</label>
+                            <select type="number" class="form-control form-control-sm" name="monthdate" id="id_monthdate">
+                                {% for date in dates %}
+                                    <option value="{{ date }}">{{ date.number }}</option>
+                                {% endfor %}
+                            </select>
+                            <p><div class="form-error text-danger">{{  form.monthdate.errors | format_err }}</div></p>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_title">{{ form.title.label }}</label>
+                        <input type="text" value="{{ object.title }}" class="form-control form-control-sm" name="title" maxlength="200" required="" id="id_title">
+                        <p><div class="form-error text-danger">{{  form.title.errors | format_err }}</div></p>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="id_hour">{{ form.hour.label }}</label>
+                                <select name="hour" class="form-control form-control-sm" id="id_hour">
+                                <option value="{{ object.hour.pk }}" selected="">{{ object.hour.num }}</option>
+                                {% for hour in hours %}
+                                <option value="{{ hour.id }}">{{ hour.num }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="id_minute">{{ form.minute.label }}</label>
+                                <select name="minute" class="form-control form-control-sm" id="id_minute">
+                                    <option value="{{ object.minute.pk }}">{{ object.minute.num }}</option>
+                                    {% for minute in minutes %}
+                                    <option value="{{ minute.id }}">{{ minute.num }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <p><div class="form-error text-danger">{{  form.hour.errors | format_err }}</div></p>
+                        <p><div class="form-error text-danger">{{  form.minute.errors | format_err }}</div></p>
+                        </div>
+                    <div class="mb-3">
+                        <label for="id_periodicity">{{ form.periodicity.label }}</label>
+                            <select name="periodicity" class="form-control form-control-sm" id="id_periodicity">
+                                <option value="{{ object.periodicity }}" selected="">{{ object.periodicity }}</option>
+                                <option value="Ежедневно" selected="">Ежедневно</option>
+                                <option value="Раз в неделю">Раз в неделю</option>
+                                <option value="Раз в месяц">Раз в месяц</option>
+                        </select>
+                        <p><div class="form-error text-danger">{{  form.periodicity.errors | format_err }}</div></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_mail_dump">{{ form.mail_dump.label }}</label>
+                        <input type="file" value="{{ object.mail_dump }}"  class="form-control form-control-sm" name="mail_dump" id="id_mail_dump">
+                        {% if object.mail_dump %}
+                        <p>На данный момент: <a href="{{ object.mail_dump }}">{{ object.mail_dump }}</a></p>
+                        <input type="checkbox" name="mail_dump-clear" id="mail_dump-clear_id">
+                        <label for="mail_dump-clear_id">Очистить базу рассылки</label>
+                        {%  endif %}
+                        <p><div class="form-error text-danger">{{  form.maildump.errors | format_err }}</div></p>
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

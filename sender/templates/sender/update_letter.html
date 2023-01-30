@@ -1,0 +1,43 @@
+{% extends 'sender/base.html' %}
+
+{% block content %}
+    {% load static %}
+    {% load sender_tags %}
+    {% load sender_filters %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2 col-md-12 col-sm-12"></div>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header text-center">
+                    <h4 class="my-0 font-weight-normal">Редактирование письма</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="" class="form-floating" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_title">{{ form.title.label }}</label>
+                            <input type="text" value="{{ object.title }}" class="form-control form-control-sm" name="title" maxlength="50" id="id_title">
+                            <p><div class="form-error text-danger">{{  form.title.errors | format_err }}</div></p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_position">{{ form.position.label }}</label>
+                            <input type="number" class="form-control form-control-sm" name="position" value="{{ object.position }}" id="id_position">
+                            <small>Для удобства сортировки писем относительно друг друга очередь изначально устанавливается с шагом 10</small>
+                            <p><div class="form-error text-danger">{{  form.position.errors | format_err }}</div></p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_content">{{ form.content.label }}</label>
+                            <textarea name="content" class="form-control form-control-sm" cols="40" rows="10" id="id_content">{{ object.content }}</textarea>
+                            <p><div class="form-error text-danger">{{  form.content.errors | format_err }}</div></p>
+                        </div>
+                        <button type="submit" class="btn btn-lg btn-block btn-outline-success">Сохранить письмо</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
