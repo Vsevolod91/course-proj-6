@@ -15,12 +15,14 @@ def send_letter():
     mail_dump = ConfigMailing.objects.all().get(id=mailing).mail_dump
     from_email = settings.EMAIL_HOST_USER
     
-    sent_letter = sorted(LetterMailing.objects.all().filter(mailing=mailing, status='Ожидает отправки'))[0]
+    letters = sorted(LetterMailing.objects.all().filter(mailing=mailing, status='Ожидает отправки'))
+    sent_letter = letters[0]
     subject = sent_letter.title
     message = sent_letter.content
     
     if not TryMailing.objects.all().get(mailing=mailing):
         current_try = TryMailing(username=user, mailing=mailing, letter=sent_letter.pk)
+        ConfigMailing.objects.all().get(id=mailing).status = 'Запущена'
     else:
         current_try = TryMailing.objects.all().get(mailing=mailing)
     
@@ -42,6 +44,10 @@ def send_letter():
         current_try.count_try += 1
         current_try.mail_server_respond = success_sent
         current_try.letter = sent_letter.pk
+        
+        if len(letters) == 1:
+            ConfigMailing.objects.all().get(id=mailing).status = 'Завершена'
+        
         sent_letter.status = 'Отправлено'
     """
 
