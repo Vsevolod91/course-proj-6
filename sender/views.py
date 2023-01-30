@@ -69,7 +69,7 @@ class ListAndCreateConfigMailing(CreateView):
                 f.write(f'{create_cronjob}')
 
             CRONJOBS.append(cronjob)
-            print('список задач')
+            print('список кронов')
             print(CRONJOBS)
 
         return super().form_valid(form)
@@ -161,6 +161,18 @@ class ConfigMailingDeleteView(DeleteView):
 
     lm_list = LetterMailingListView()
     lm_list_query = lm_list.get_queryset()
+
+    def post(self, request, *args, **kwargs):
+        cronjob = (self.get_object().cron_period, self.get_object().cron_path)
+
+        if cronjob in CRONJOBS:
+            print('удаление крона')
+            print(cronjob)
+            CRONJOBS.pop(CRONJOBS.index(cronjob))
+            print('список кронов')
+            print(CRONJOBS)
+
+        return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
