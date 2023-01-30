@@ -17,7 +17,7 @@
         <div class="col-lg-3 col-md-12 col-sm-12"></div>
         <div class="col-lg-6 col-md-12 col-sm-12">
         {% if not object_list %}
-            <h4>У Вас пока нет запущенных рассылок.</h4>
+            <h3 class="lead"><strong>У Вас пока нет запущенных рассылок.</strong></h3>
             {% else %}
             {% for object in object_list %}
           <div class="card border-{% if object.mail_server_respond == 'Письмо успешно отправлено' %}success">{% else %}danger">{% endif %}
