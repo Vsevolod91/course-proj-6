@@ -101,6 +101,7 @@ class ConfigMailingUpdateView(UpdateView):
             os.makedirs(f"sender/crons/{user}")
 
         if cronjob in CRONJOBS:
+            print('удаление старого крона')
             CRONJOBS.pop(CRONJOBS.index(cronjob))
 
         if self.object.periodicity == 'Ежедневно':
