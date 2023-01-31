@@ -1,15 +1,15 @@
-from smtplib import SMTPException
-from sender.models import *
-from django.conf import settings
 
-func = """
+
+func = '''
 from django.core.mail import send_mail
 from django.conf import settings
 from sender.models import *
 from smtplib import SMTPException
+from config.settings import CRONJOBS
 
 
 def send_letter():
+    print('Иниациализация крона')
     user = {}
     mailing = {}
     mail_dump = ConfigMailing.objects.all().get(id=mailing).mail_dump
@@ -21,6 +21,7 @@ def send_letter():
     message = sent_letter.content
     
     if not TryMailing.objects.all().get(mailing=mailing):
+        print('Инициализация попытки')
         current_try = TryMailing(username=user, mailing=mailing, letter=sent_letter.pk)
         ConfigMailing.objects.all().get(id=mailing).status = 'Запущена'
     else:
@@ -29,6 +30,7 @@ def send_letter():
     recipient_list = []
     with open(mail_dump, 'r') as clients:
         for client in clients:
+            print('Итерация по почтовым адресам')
             recipient_list.append(client)
     
     try:
@@ -39,15 +41,25 @@ def send_letter():
         current_try.count_try += 1
         
     else:
-    
+        print('Успешная попытка')
         success_sent = 'Письмо успешно отправлено'
         current_try.count_try += 1
         current_try.mail_server_respond = success_sent
         current_try.letter = sent_letter.pk
         
         if len(letters) == 1:
-            ConfigMailing.objects.all().get(id=mailing).status = 'Завершена'
+            print('Последнее письмо')
+            mailing = ConfigMailing.objects.all().get(id=mailing)
+            mailing.status = 'Завершена'
+            cronjob = (mailing.cron_period, mailing.cron_path)
+            
+            if cronjob in CRONJOBS:
+                CRONJOBS.pop(CRONJOBS.index(cronjob))
         
         sent_letter.status = 'Отправлено'
-    """
+        print('Успешное завершение крона')
+        
+        return True
+'''
+
 
