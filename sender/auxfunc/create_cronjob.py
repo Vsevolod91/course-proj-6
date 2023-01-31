@@ -60,6 +60,9 @@ def send_letter():
         print('Успешное завершение крона')
         
         return True
+        
+if __name__ == '__main__':
+    send_letter()        
 '''
 
 
