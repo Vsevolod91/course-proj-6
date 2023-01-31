@@ -117,7 +117,7 @@ class ConfigMailingUpdateView(UpdateView):
             print(CRONJOBS)
 
         if self.object.periodicity == 'Раз в неделю' and self.object.weekday:
-            self.object.cron_period = f'{cut_first_symbol.do(self.object.minute.num)} {self.object.hour.num} * {self.object.weekday.day_id} *'
+            self.object.cron_period = f'{cut_first_symbol.do(self.object.minute.num)} {self.object.hour.num} * * {self.object.weekday.day_id}'
             self.object.cron_path = f'sender.crons.{user}.{mailing}.cron.send_letter'
             cronjob = (self.object.cron_period, self.object.cron_path)
 
