@@ -20,7 +20,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('sender.urls', namespace='sender'))
+    path('', include('sender.urls', namespace='sender')),
+path('tinymce/', include('tinymce.urls')),
 ]
 
 if settings.DEBUG:

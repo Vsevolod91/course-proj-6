@@ -7,7 +7,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from sender.forms import RegisterUserForm
 from django.urls import reverse_lazy
 from sender.models import*
-from config.settings import CRONJOBS
+from django.conf import settings
 from sender.auxfunc import cut_first_symbol
 from sender.auxfunc.create_cronjob import func
 
@@ -68,9 +68,11 @@ class ListAndCreateConfigMailing(CreateView):
             with open(f'{target_dir}/cron.py', 'w', encoding='utf-8') as f:
                 f.write(f'{create_cronjob}')
 
-            CRONJOBS.append(cronjob)
+            settings.CRONJOBS.append(cronjob)
+            os.system('python3 manage.py crontab add')
+            os.system('python3 manage.py crontab show > cronjons.txt')
             print('список кронов')
-            print(CRONJOBS)
+            print( settings.CRONJOBS)
 
         return super().form_valid(form)
 
@@ -100,9 +102,11 @@ class ConfigMailingUpdateView(UpdateView):
         if not os.path.isdir(f'sender/crons/{user}'):
             os.makedirs(f"sender/crons/{user}")
 
-        if cronjob in CRONJOBS:
+        if cronjob in  settings.CRONJOBS:
             print('удаление старого крона')
-            CRONJOBS.pop(CRONJOBS.index(cronjob))
+            settings.CRONJOBS.pop( settings.CRONJOBS.index(cronjob))
+            os.system('python3 manage.py crontab add')
+            os.system('python3 manage.py crontab show > cronjons.txt')
 
         if self.object.periodicity == 'Ежедневно':
             self.object.cron_period = f'{cut_first_symbol.do(self.object.minute.num)} {self.object.hour.num} * * *'
@@ -112,9 +116,11 @@ class ConfigMailingUpdateView(UpdateView):
             with open(f'{target_dir}/cron.py', 'w', encoding='utf-8') as f:
                 f.write(f'{create_cronjob}')
 
-            CRONJOBS.append(cronjob)
+            settings.CRONJOBS.append(cronjob)
+            os.system('python3 manage.py crontab add')
+            os.system('python3 manage.py crontab show > cronjons.txt')
             print('список кронов')
-            print(CRONJOBS)
+            print(settings.CRONJOBS)
 
         if self.object.periodicity == 'Раз в неделю' and self.object.weekday:
             self.object.cron_period = f'{cut_first_symbol.do(self.object.minute.num)} {self.object.hour.num} * * {self.object.weekday.day_id}'
@@ -124,9 +130,11 @@ class ConfigMailingUpdateView(UpdateView):
             with open(f'{target_dir}/cron.py', 'w', encoding='utf-8') as f:
                 f.write(f'{create_cronjob}')
 
-            CRONJOBS.append(cronjob)
+            settings.CRONJOBS.append(cronjob)
+            os.system('python3 manage.py crontab add')
+            os.system('python3 manage.py crontab show > cronjons.txt')
             print('список кронов')
-            print(CRONJOBS)
+            print(settings.CRONJOBS)
 
         if self.object.periodicity == 'Раз в месяц' and self.object.monthdate:
             self.object.cron_period = f'{cut_first_symbol.do(self.object.minute.num)} {self.object.hour.num} {self.object.monthdate.number} * *'
@@ -136,9 +144,11 @@ class ConfigMailingUpdateView(UpdateView):
             with open(f'{target_dir}/cron.py', 'w', encoding='utf-8') as f:
                 f.write(f'{create_cronjob}')
 
-            CRONJOBS.append(cronjob)
+            settings.CRONJOBS.append(cronjob)
+            os.system('python3 manage.py crontab add')
+            os.system('python3 manage.py crontab show > cronjons.txt')
             print('список кронов')
-            print(CRONJOBS)
+            print(settings.CRONJOBS)
 
         return super().form_valid(form)
 
@@ -165,12 +175,14 @@ class ConfigMailingDeleteView(DeleteView):
     def post(self, request, *args, **kwargs):
         cronjob = (self.get_object().cron_period, self.get_object().cron_path)
 
-        if cronjob in CRONJOBS:
+        if cronjob in settings.CRONJOBS:
             print('удаление крона')
             print(cronjob)
-            CRONJOBS.pop(CRONJOBS.index(cronjob))
+            settings.CRONJOBS.pop(settings.CRONJOBS.index(cronjob))
+            os.system('python3 manage.py crontab add')
+            os.system('python3 manage.py crontab show > cronjons.txt')
             print('список кронов')
-            print(CRONJOBS)
+            print(settings.CRONJOBS)
 
         return super().post(request, *args, **kwargs)
 
